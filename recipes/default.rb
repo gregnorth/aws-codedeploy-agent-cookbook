@@ -47,10 +47,17 @@ when 'fedora'
   manual_installer
 
 when 'centos'
-  %w(unzip rsync ruby tar openssl-devel readline-devel zlib-devel).each do |pkg|
-    package pkg
+  if node['platform_version'].to_f >= 7.0
+    %w(ruby).each do |pkg|
+      package pkg
+    end
+    amazon_installer
+  else
+    %w(unzip rsync ruby tar openssl-devel readline-devel zlib-devel).each do |pkg|
+      package pkg
+    end
+    manual_installer
   end
-  manual_installer
 
 when 'debian'
   execute 'apt-get-update-periodic' do
